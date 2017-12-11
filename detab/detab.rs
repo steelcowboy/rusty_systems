@@ -1,3 +1,6 @@
+/* Detab: A program to read in input, converting tabs to the appropriate number
+ * of spaces -- just like expand(1) does */
+
 use std::io;
 use std::io::BufRead;
 
