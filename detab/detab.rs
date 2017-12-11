@@ -29,6 +29,6 @@ fn main() {
             }
         }
 
-        println!("");
+        println!();
     }
 }
