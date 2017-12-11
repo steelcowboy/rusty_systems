@@ -25,7 +25,7 @@ fn main() {
         for chr in line_str.chars() {
             if chr == '\t' {
                 // Borrow a slice of TAB to get the correct number of spaces
-                let _ = stdout.write_all(&TAB[..8 - (num % 8)]);
+                let _ = stdout.write_all(&TAB[num % 8..]);
                 num = 0;
             } 
             else {
