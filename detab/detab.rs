@@ -15,10 +15,7 @@ fn main() {
         };
         let mut num = 0;
 
-        /* Was going to do it recursively, but it seems string are meant to be
-         * iterated over. The reasoning is that if they contain unicode 
-         * characters, you can't as easily determine which is the next char */
-        for chr in line_str.as_str().chars() {
+        for chr in line_str.chars() {
             if chr == '\t' {
                 let num_iters = 8 - (num % 8);
                 for _ in 0..num_iters {
