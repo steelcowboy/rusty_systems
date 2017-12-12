@@ -106,7 +106,7 @@ fn analyze_file(file_name: String, map: &mut HashMap<String, usize>) -> usize {
     for line in reader.lines() {
         let l = line.unwrap();
 
-        for word in l.split(|c: char| !c.is_alphanumeric()) {
+        for word in l.split(|c: char| !c.is_alphanumeric() && c != '\'') {
             let mut wcount = 1;
             let word = word.to_string();
 
