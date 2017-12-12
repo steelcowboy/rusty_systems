@@ -3,10 +3,9 @@ use std::process;
 
 use std::fs::File;
 use std::io::BufReader;
-//use std::io::Read;
 use std::io::prelude::*;
 
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 fn main() {
     // Temporary mutable variables for parsing command line
@@ -64,14 +63,28 @@ fn main() {
 
     // Number of words finalized, no more modifying
     let num_words = _num_words;
-    let mut wordcounts: BTreeMap<String, usize> = BTreeMap::new();
+    let mut wordcounts: HashMap<String, usize> = HashMap::new();
+    let mut total_words = 0;
 
     // into_iter() will consume args, which is slightly unnecssary as it would
     // be freed at the end of the program anyways, but why not?
     for file in args.into_iter() {
-        analyze_file(file, &mut wordcounts);
+        total_words += analyze_file(file, &mut wordcounts);
     }
-    println!("{:?}", wordcounts);
+
+    println!("Top {} words (out of {}) are:", num_words, total_words);
+    let mut sorted_results = wordcounts.into_iter();
+
+    for _ in 0..num_words {
+        let (word, count) = match sorted_results.next() {
+            Some(t) => t,
+            None => {
+                break;
+            },
+        };
+        println!("{:6} {}", count, word);
+    }
+    
 }
 
 fn print_usage(name: &String) {
@@ -79,15 +92,16 @@ fn print_usage(name: &String) {
     process::exit(-1);
 }
 
-fn analyze_file(file_name: String, map: &mut BTreeMap<String, usize>) {
+fn analyze_file(file_name: String, map: &mut HashMap<String, usize>) -> usize {
     let file = match File::open(file_name) {
         Err(e) => {
             eprintln!("{}", e);
-            return;
+            return 0;
         },
         Ok(file) => file,
     };
     let reader = BufReader::new(file);
+    let mut total_words = 0;
     
     for line in reader.lines() {
         let l = line.unwrap();
@@ -103,7 +117,11 @@ fn analyze_file(file_name: String, map: &mut BTreeMap<String, usize>) {
             if let Some(n) = map.get(&word) {
                 wcount += n;
             }
+
+            total_words += 1;
             map.insert(word, wcount); 
         }
     }
+
+    return total_words;
 }
