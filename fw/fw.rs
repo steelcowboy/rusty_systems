@@ -64,13 +64,14 @@ fn main() {
 
     // Number of words finalized, no more modifying
     let num_words = _num_words;
-    let mut wordcounts: BTreeMap<&str, usize> = BTreeMap::new();
+    let mut wordcounts: BTreeMap<String, usize> = BTreeMap::new();
 
     // into_iter() will consume args, which is slightly unnecssary as it would
     // be freed at the end of the program anyways, but why not?
     for file in args.into_iter() {
         analyze_file(file, &mut wordcounts);
     }
+    println!("{:?}", wordcounts);
 }
 
 fn print_usage(name: &String) {
@@ -78,7 +79,7 @@ fn print_usage(name: &String) {
     process::exit(-1);
 }
 
-fn analyze_file(file_name: String, map: &mut BTreeMap<&str, usize>) {
+fn analyze_file(file_name: String, map: &mut BTreeMap<String, usize>) {
     let file = match File::open(file_name) {
         Err(e) => {
             eprintln!("{}", e);
@@ -93,7 +94,13 @@ fn analyze_file(file_name: String, map: &mut BTreeMap<&str, usize>) {
 
         for word in l.split(|c: char| !c.is_alphanumeric()) {
             let mut wcount = 1;
-            if let Some(n) = map.get(word) {
+            let word = word.to_string();
+
+            if word == "" {
+                continue;
+            }
+
+            if let Some(n) = map.get(&word) {
                 wcount += n;
             }
             map.insert(word, wcount); 
