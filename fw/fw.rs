@@ -1,6 +1,13 @@
 use std::env;
 use std::process;
 
+use std::fs::File;
+use std::io::BufReader;
+//use std::io::Read;
+use std::io::prelude::*;
+
+use std::collections::BTreeMap;
+
 fn main() {
     // Temporary mutable variables for parsing command line
     let mut _num_index = 0;
@@ -57,9 +64,13 @@ fn main() {
 
     // Number of words finalized, no more modifying
     let num_words = _num_words;
+    let mut wordcounts: BTreeMap<&str, usize> = BTreeMap::new();
 
-    println!("Ready to find the most frequent {} words in the file", num_words);
-    println!("Going to read the following files: {:?}", args);
+    // into_iter() will consume args, which is slightly unnecssary as it would
+    // be freed at the end of the program anyways, but why not?
+    for file in args.into_iter() {
+        analyze_file(file, &mut wordcounts);
+    }
 }
 
 fn print_usage(name: &String) {
@@ -67,3 +78,25 @@ fn print_usage(name: &String) {
     process::exit(-1);
 }
 
+fn analyze_file(file_name: String, map: &mut BTreeMap<&str, usize>) {
+    let file = match File::open(file_name) {
+        Err(e) => {
+            eprintln!("{}", e);
+            return;
+        },
+        Ok(file) => file,
+    };
+    let reader = BufReader::new(file);
+    
+    for line in reader.lines() {
+        let l = line.unwrap();
+
+        for word in l.split(|c: char| !c.is_alphanumeric()) {
+            let mut wcount = 1;
+            if let Some(n) = map.get(word) {
+                wcount += n;
+            }
+            map.insert(word, wcount); 
+        }
+    }
+}
