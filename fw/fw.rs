@@ -66,17 +66,24 @@ fn main() {
     let mut wordcounts: HashMap<String, usize> = HashMap::new();
     let mut total_words = 0;
 
+    let mut count_vec = Vec::new();
+
     // into_iter() will consume args, which is slightly unnecssary as it would
     // be freed at the end of the program anyways, but why not?
     for file in args.into_iter() {
         total_words += analyze_file(file, &mut wordcounts);
     }
 
-    println!("Top {} words (out of {}) are:", num_words, total_words);
-    let mut sorted_results = wordcounts.into_iter();
+    for (word, count) in wordcounts.into_iter() {
+        count_vec.push( (count, word) );
+    }
+    count_vec.sort_unstable_by(|a, b| b.0.cmp(&a.0));
 
+    println!("Top {} words (out of {}) are:", num_words, total_words);
+
+    let mut counts = count_vec.into_iter();
     for _ in 0..num_words {
-        let (word, count) = match sorted_results.next() {
+        let (count, word) = match counts.next() {
             Some(t) => t,
             None => {
                 break;
