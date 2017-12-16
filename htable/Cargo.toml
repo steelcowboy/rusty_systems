@@ -1,0 +1,6 @@
+[package]
+name = "htable"
+version = "0.1.0"
+authors = ["Jim Heald <james.r.heald@gmail.com>"]
+
+[dependencies]

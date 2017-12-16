@@ -5,3 +5,8 @@
 
 !Makefile
 !LICENSE
+
+# Using cargo like a pro
+Cargo.lock
+target/
+*.rlib
