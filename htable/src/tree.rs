@@ -1,20 +1,21 @@
+/*
 use std::cmp;
 use std::cmp::Ordering;
 
+type TreeLink = Option<Box<TLink>>;
+
 // This will set the bools to false and the nums to 0
 #[derive(Default)]
-pub struct Node<T> {
+pub struct TreeNode {
     is_leaf: bool,
-    is_node: bool,
-
     chr: char,
     freq: usize, 
 
-    left: Option,
-    right: Option,
+    left: TreeLink,
+    right: TreeLink,
 }
 
-impl Node {
+impl TreeNode {
     pub fn is_leaf(&self) -> bool {
         return self.is_leaf;
     }
@@ -61,5 +62,8 @@ impl Ord for Node {
 #[cfg(test)]
 mod tests {
     #[test]
-    ;
+    fn nuthin() {
+        ;
+    }
 }
+*/
