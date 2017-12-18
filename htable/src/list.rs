@@ -8,40 +8,44 @@ pub struct CFPair {
     is_node: bool,
 }
 
-//type Link = Option<Box<Node>>;
+struct Link(Option<Box<Node>>);
 
-//pub struct Node {
-    //elem: CFPair,
-    //next: Link,
-//}
+pub struct Node {
+    elem: CFPair,
+    next: Link,
+}
 
-//impl Link {
-    //pub fn new() -> Link {
-        //None
-    //}
+impl Link {
+    pub fn new() -> Link {
+        Link(None)
+    }
 
-    //pub fn insert_sorted(self, n: CFPair) -> Link {
-        //match self {
-            //None => Some(Box::new(Link {
-                //elem: n,
-                //next: None,
-            //})),
-            //Some(curr) => {
-                //if curr > n {
-                    //return Some(Box::new(Node {
-                        //elem: n,
-                        //next: self,
-                    //}));
-                //}
-                //Some(Box::new(Node {
-                    //elem: curr,
-                    //next: curr.insert_sorted(n),
-                //}))
-            //},
-        //}
-    //}    
+    pub fn new_boxed(&self, n: Node) -> Link {
+        Link(Some(Box::new(n)))
+    }
 
-//}
+    pub fn insert_sorted(self, n: CFPair) -> Link {
+        match self.0 {
+            None => self.new_boxed(Node {
+                elem: n,
+                next: Link(None),
+            }),
+            Some(curr) => {
+                if curr.elem > n {
+                    return self.new_boxed(Node {
+                        elem: n,
+                        next: Link(Some(curr)),
+                    });
+                }
+                self.new_boxed(Node {
+                    elem: curr.elem,
+                    next: self.insert_sorted(n),
+                })
+            },
+        }
+    }    
+
+}
 
 impl PartialOrd for CFPair {
     fn partial_cmp(&self, other: &CFPair) -> Option<Ordering> {
